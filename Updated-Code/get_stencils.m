@@ -5,12 +5,12 @@ sysMat = spdiags(ones(sz,1)*sten,-1:1,sz,sz)*c; %sparse diagonal
 
 %% FE mthd
 if mthd ==0
-   A = sysMat; B = sysMat; 
+   A = sysMat; B = eye(sz); 
 end
 
 %% BE mthd
 if mthd ==1
-    A =eye(sz)-k.*sysMat; B=A;
+    A =eye(sz)-k.*sysMat; B=eye(sz);
 end
 
 %% CN mthd
