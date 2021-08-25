@@ -1,16 +1,25 @@
 function [sysMat,A,B]=get_stencils(c,k,sz,mthd)
+%%
+% c is the diffusion coefficient
+% k is the time step size
+% sz is the size of the 1D spatial x vector
+% mthd is the numerical method:
+% 0 = Using Forward Euler time stepping
+% 1 = Using Backward Euler time stepping
+% 2 = Using Crank-Nicolson time stepping
 
+%% initialize basic stencil
 sten = [1 -2 1];
-sysMat = spdiags(ones(nX,1)*sten,-1:1,nX,nX)*c; %sparse diagonal
+sysMat = spdiags(ones(sz,1)*sten,-1:1,sz,sz)*c; %sparse diagonal
 
 %% FE mthd
 if mthd ==0
-   A = sysMat; B = sysMat; 
+   A = sysMat; B = eye(sz); 
 end
 
 %% BE mthd
 if mthd ==1
-    A =eye(sz)-k.*sysMat; B=A;
+    A =eye(sz)-k.*sysMat; B=eye(sz);
 end
 
 %% CN mthd

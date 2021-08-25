@@ -27,7 +27,7 @@ mm=zeros(length(x),1); mm(1)=mi;
 hh=zeros(length(x),1); hh(1)=hi;
 
 %% define stencil matrices
-[~,A,B]=get_stencils(b/h^2,k,length(x),2);
+[~,A,B]=get_stencils(b,h,k,length(x),2);
 
 %% reaction term
 f = @(nn,mm,hh,v) (-1/c).*(gk.*nn.^4.*(v-ek)+gna.*mm.^3.*hh.*...
