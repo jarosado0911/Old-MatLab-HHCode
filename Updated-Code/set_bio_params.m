@@ -1,4 +1,4 @@
-function [a,R,gk,ek,gna,ena,gl,el,ni,mi,hi,c,vstart]=set_params()
+function [a,R,gk,ek,gna,ena,gl,el,ni,mi,hi,c,vstart,b]=set_bio_params()
 a=.001;     %radius
 R=10;       %resistance
 gk=36;      %potassium ion conductance
@@ -12,5 +12,7 @@ gl=0.3;     %leak conductance
 el=0.6;     %leak potential
 c=0.09;
 vstart = 55;
+%compute diff coefficient
+b=a/(2*R*c);
 end
 

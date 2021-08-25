@@ -48,22 +48,32 @@ open(vidfile);
         %% Operator splitting: first solve diffusion using CN, 
         %  then reaction with FE
         u = linsolve(A,B*u);
-        u = sim_functions.FE(u,f(nn,mm,hh,u),k);
+        u = FE(u,f(nn,mm,hh,u),k);
         
         %% Forward Euler for time dependent ODEs on n,m,h
         if mthd == 0
-            nn = sim_functions.FE(nn,fn(nn,u),k);
-            mm = sim_functions.FE(mm,fm(mm,u),k); 
-            hh = sim_functions.FE(hh,fh(hh,u),k);
+            nn = FE(nn,fn(nn,u),k); mm = FE(mm,fm(mm,u),k); hh = FE(hh,fh(hh,u),k);
         %% RK4 for time dependent ODEs on n,m,h
         else
-            nn = sim_functions.RK4(nn,u,k,fn); 
-            mm = sim_functions.RK4(mm,u,k,fm); 
-            hh = sim_functions.RK4(hh,u,k,fh);
+            nn = RK4(nn,u,k,fn); mm = RK4(mm,u,k,fm); hh = RK4(hh,u,k,fh);
         end
+
         %% plotting
+        clf()
         if mod(i,40) == 0
-            sim_functions.make_plot(x,u,i*k);
+            hold on
+            plot(x,u,'k','Linewidth',1.5)
+            ylim([-20 120])
+            xlim([x(1) x(end)])
+            title(sprintf('time = %0.2f [ms]',i*k))
+            
+            scatter(x,0.*x-15,80,u,'filled','s');
+            xlim([x(1) x(end)])
+            axis off
+            colormap jet
+            caxis([-15 100])
+            colorbar('southoutside')
+            drawnow
             thisFrame = getframe(gcf);
             writeVideo(vidfile, thisFrame);
         end

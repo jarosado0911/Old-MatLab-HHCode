@@ -6,7 +6,7 @@ function FE_method(nX,nT,X,T)
 % T = end time
 
 if nargin == 0
-    [nX,nT, X, T]=deal(200,16000,1,25);
+    [nX,nT, X, T,mthd]=set_sim_params();
 end
 
 x=linspace(0,X,nX);   % space vector
@@ -15,9 +15,7 @@ k=t(2)-t(1);          % time step size
 h=x(2)-x(1);          % equidistant spatial discretization width
 
 %% Biological Parameters for AP
-[a,R,gk,ek,gna,ena,gl,el,ni,mi,hi,c,vstart]=set_params();
-%compute diff coefficient
-b=a/(2*R*c);
+[~,~,gk,ek,gna,ena,gl,el,ni,mi,hi,c,vstart,b]=set_bio_params();
 
 %% Initialize Solutions
 u=zeros(length(x),1); u(1)=vstart; 
@@ -39,7 +37,6 @@ fh = @(h,v) gating_functions.ah(v).*(1-h)-gating_functions.bh(v).*h;
 
 %% for loops for solving
 figure(1)
-
 movie_name = 'FE_method';
 vidfile = VideoWriter(sprintf('%s.mp4',movie_name),'MPEG-4');
 open(vidfile);
@@ -48,38 +45,27 @@ open(vidfile);
         u(1)=vstart; u(end)=0.0;
 
         %% Forward Euler for Diffusion and Reaction
-        u = FE(u,A*u+f(nn,mm,hh,u),k);
+        u = sim_functions.FE(u,A*u+f(nn,mm,hh,u),k);
         
         %% Forward Euler for time dependent ODEs on n,m,h
-        nn = FE(nn,fn(nn,u),k);
-        mm = FE(mm,fm(mm,u),k);
-        hh = FE(hh,fh(hh,u),k);
+        if mthd == 0
+            nn = sim_functions.FE(nn,fn(nn,u),k);
+            mm = sim_functions.FE(mm,fm(mm,u),k); 
+            hh = sim_functions.FE(hh,fh(hh,u),k);
+        %% RK4 for time dependent ODEs on n,m,h
+        else
+            nn = sim_functions.RK4(nn,u,k,fn); 
+            mm = sim_functions.RK4(mm,u,k,fm); 
+            hh = sim_functions.RK4(hh,u,k,fh);
+        end
 
         %% plotting
-        clf()
         if mod(i,40) == 0
-            hold on
-            plot(x,u,'k','Linewidth',1.5)
-            ylim([-20 120])
-            xlim([x(1) x(end)])
-            title(sprintf('time = %0.2f [ms]',i*k))
-            
-            scatter(x,0.*x-15,80,u,'filled','s');
-            xlim([x(1) x(end)])
-            axis off
-            colormap jet
-            caxis([-15 100])
-            colorbar('southoutside')
-            drawnow
+            sim_functions.make_plot(x,u,i*k);
             thisFrame = getframe(gcf);
             writeVideo(vidfile, thisFrame);
         end
     end
     
     close(vidfile);
-end
-
-%% Forward Euler Step Function
-function out = FE(X1,X2,K)
-    out = X1 + K.*X2;
 end
