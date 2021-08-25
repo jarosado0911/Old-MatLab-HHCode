@@ -1,0 +1,24 @@
+function [sysMat,A,B]=get_stencils(c,k,sz,mthd)
+
+sten = [1 -2 1];
+sysMat = spdiags(ones(nX,1)*sten,-1:1,nX,nX)*c; %sparse diagonal
+
+%% FE mthd
+if mthd ==0
+   A = sysMat; B = sysMat; 
+end
+
+%% BE mthd
+if mthd ==1
+    A =eye(sz)-k.*sysMat; B=A;
+end
+
+%% CN mthd
+if mthd ==2
+    A =eye(sz)-(k/2).*sysMat;
+    B =eye(sz)+(k/2).*sysMat;
+end
+
+
+end
+

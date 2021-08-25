@@ -49,8 +49,8 @@ U=zeros(4*nR,nTime);   % initialize solution
 % Initialize one end of rod with fixed voltage
 % This is the first row entries of U
 vstart=55;
-%U(1,1:ceil(nTime/2))=vstart;
-U(1,1:end)=0;%vstart;
+U(1,1:end)=vstart;
+U(end,1:end)=0;%vstart;
 % Now initialize m,n,h entries
 U(nR+1,1)=ni;      %initialize n whole row over time
 U(2*nR+1,1)=mi;    %initialize m whole row over time
@@ -58,7 +58,7 @@ U(3*nR+1,1)=hi;    %initialize h whole row over time
 
 % Now operator splitting
 for j=1:nTime-1
-    U(ceil(nX/2),j)=vstart;
+    U(1,j)=vstart;
     % Diffusion Solve
    [Uout,~,~]=diffSolve(U(1:nR,j),U(1,j+1),U(nR,j+1),b,nX,2,x0,...
                         xf,t(j),t(j+1));
@@ -81,7 +81,7 @@ X2=X2';
 T2=T2';
 
 fig=figure('units','normalized','outerposition',[0 0 1 1]);
-vidfile = VideoWriter('OpsplitCenter2.mp4','MPEG-4');
+vidfile = VideoWriter('OpsplitCenter2b.mp4','MPEG-4');
 open(vidfile);
 for k=1:100:nTime
     clf
