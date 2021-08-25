@@ -1,6 +1,6 @@
 function [a,R,gk,ek,gna,ena,gl,el,ni,mi,hi,c,vstart]=set_params()
 a=.001;     %radius
-R=100;       %resistance
+R=10;       %resistance
 gk=36;      %potassium ion conductance
 ek=-12;     %potassium reversal potential
 gna=120;    %sodium ion conductance

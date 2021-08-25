@@ -6,7 +6,7 @@ function BE_method(nX,nT,X,T)
 % T = end time
 
 if nargin == 0
-    [nX,nT, X, T]=deal(200,16000,1,60);
+    [nX,nT, X, T]=deal(200,16000,1,25);
 end
 
 x=linspace(0,X,nX);   % space vector
@@ -34,9 +34,9 @@ f = @(nn,mm,hh,v) (-1/c).*(gk.*nn.^4.*(v-ek)+gna.*mm.^3.*hh.*...
     (v-ena)+gl.*(v-el));
 
 %% for ODE solves
-fn = @(n,v) an(v).*(1-n)-bn(v).*n;
-fm = @(m,v) am(v).*(1-m)-bm(v).*m;
-fh = @(h,v) ah(v).*(1-h)-bh(v).*h;
+fn = @(n,v) gating_functions.an(v).*(1-n)-gating_functions.bn(v).*n;
+fm = @(m,v) gating_functions.am(v).*(1-m)-gating_functions.bm(v).*m;
+fh = @(h,v) gating_functions.ah(v).*(1-h)-gating_functions.bh(v).*h;
 
 %% for loops for solving
 figure(1)
@@ -86,28 +86,4 @@ end
 %% Forward Euler Step Function
 function out = FE(X1,X2,K)
     out = X1 + K.*X2;
-end
-%% Gating functions
-function out=an(vin)
-out=(0.01).*(10-vin)./(exp((10-vin)./10)-1);
-end
-
-function out=bn(vin)
-out=(0.125).*exp(-vin./80);
-end
-
-function out=am(vin)
-out=(0.1).*(25-vin)./(exp((25-vin)./10)-1);
-end
-
-function out=bm(vin)
-out=4.*exp(-vin./18);
-end
-
-function out=ah(vin)
-out=(0.07).*exp(-vin./20);
-end
-
-function out=bh(vin)
-out=1./(exp((30-vin)./10)+1);
 end
