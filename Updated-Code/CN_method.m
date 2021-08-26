@@ -43,20 +43,22 @@ vidfile = VideoWriter(sprintf('%s.mp4',movie_name),'MPEG-4');
 open(vidfile);
 
     for i=1:nT
-        u(1)=vstart; u(end)=0.0;
-
-        %% Operator splitting: first solve diffusion using CN, 
-        %  then reaction with FE
+        %% Operator splitting: first solve diffusion using BE, then solve ODEs
         u = linsolve(A,B*u);
-        u = sim_functions.FE(u,f(nn,mm,hh,u),k);
-        
+                
         %% Forward Euler for time dependent ODEs on n,m,h
         if mthd == 0
+            u = sim_functions.FE(u,f(nn,mm,hh,u),k);
+            u(1)=vstart; u(end)=0.0;
+        
             nn = sim_functions.FE(nn,fn(nn,u),k);
             mm = sim_functions.FE(mm,fm(mm,u),k); 
             hh = sim_functions.FE(hh,fh(hh,u),k);
         %% RK4 for time dependent ODEs on n,m,h
         else
+            u = sim_functions.RK4_react_diff(nn,mm,hh,u,k,f,0);
+            u(1)=vstart; u(end)=0.0;
+            
             nn = sim_functions.RK4(nn,u,k,fn); 
             mm = sim_functions.RK4(mm,u,k,fm); 
             hh = sim_functions.RK4(hh,u,k,fh);
