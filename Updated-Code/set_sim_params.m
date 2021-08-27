@@ -1,5 +1,5 @@
 function  [nX,nT, X, T,mthd]=set_sim_params()
-    nX = 220;
+    nX = 500;
     nT = 10000;
     X = 1;
     T = 25;
