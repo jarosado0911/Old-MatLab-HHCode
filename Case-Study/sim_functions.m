@@ -27,46 +27,20 @@ classdef sim_functions
         end
         
         %% for making plots
-        function make_plot(x,u,nn,mm,hh,t)
-            s1 = subplot(1,4,1);
-            cla(s1)
+        function make_plot(x,u,t)
+            clf()
             hold on
             plot(x,u,'k','Linewidth',1.5)
-            ylim([-10 60]*1e-3)
+            ylim([-100 100]*1e-3)
             xlim([x(1) x(end)])
             title(sprintf('time = %0.2f [ms]',t*1000))
             
-            scatter(x,0.*x-0.01,80,u,'filled','s');
+            scatter(x,0.*x-0.1,80,u,'filled','s');
             xlim([x(1) x(end)])
             axis off
             colormap jet
-            caxis([-10 60]*1e-3)
+            caxis([-100 100]*1e-3)
             colorbar('southoutside') 
-            
-            s2 = subplot(1,4,2);
-            cla(s2)
-            plot(u,nn,'k');
-            ylim([0 1])
-            xlim([-10 60]*1e-3)
-            xlabel('voltage [mV]')
-            ylabel('n-state []')
-            
-            s3 = subplot(1,4,3);
-            cla(s3)
-            plot(u,mm,'k');
-            ylim([0 1])
-            xlim([-10 60]*1e-3)
-            xlabel('voltage [mV]')
-            ylabel('m-state []')
-            
-            s4 = subplot(1,4,4);
-            cla(s4)
-            plot(u,hh,'k');
-            ylim([0 1])
-            xlim([-10 60]*1e-3)
-            xlabel('voltage [mV]')
-            ylabel('h-state []')
-            
             drawnow
         end
     end

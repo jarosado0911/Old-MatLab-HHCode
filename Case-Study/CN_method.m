@@ -18,7 +18,8 @@ h=x(2)-x(1);          % equidistant spatial discretization width
 [~,~,gk,ek,gna,ena,gl,el,ni,mi,hi,c,vstart,b]=set_bio_params();
 
 %% Initialize Solutions
-u=zeros(length(x),1); u(1)=vstart; 
+vrest = -65*1e-3;
+u=zeros(length(x),1)+vrest; u(1)=vstart; 
 nn=zeros(length(x),1); nn(1)=ni;
 mm=zeros(length(x),1); mm(1)=mi;
 hh=zeros(length(x),1); hh(1)=hi;
@@ -37,7 +38,6 @@ fh = @(h,v) gating_functions.ah(v).*(1-h)-gating_functions.bh(v).*h;
 
 %% for loops for solving
 figure(1)
-set(gcf, 'Position',  [100, 100, 2500, 600]);
 
 movie_name = 'CN_method';
 vidfile = VideoWriter(sprintf('%s.mp4',movie_name),'MPEG-4');
@@ -50,7 +50,7 @@ open(vidfile);
         %% Forward Euler for time dependent ODEs on n,m,h
         if mthd == 0
             u = sim_functions.FE(u,f(nn,mm,hh,u),k);
-            u(1)=vstart; u(end)=0.0;
+            u(1)=vstart; u(end)=vrest;
         
             nn = sim_functions.FE(nn,fn(nn,u),k);
             mm = sim_functions.FE(mm,fm(mm,u),k); 
@@ -66,7 +66,7 @@ open(vidfile);
         end
         %% plotting
         if mod(i,2000) == 0
-            sim_functions.make_plot(x,u,nn,mm,hh,i*k);
+            sim_functions.make_plot(x,u,i*k);
             thisFrame = getframe(gcf);
             writeVideo(vidfile, thisFrame);
         end

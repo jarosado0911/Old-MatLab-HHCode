@@ -37,6 +37,7 @@ fh = @(h,v) gating_functions.ah(v).*(1-h)-gating_functions.bh(v).*h;
 
 %% for loops for solving
 figure(1)
+set(gcf, 'Position',  [100, 100, 2500, 600]);
 
 movie_name = 'BE_method';
 vidfile = VideoWriter(sprintf('%s.mp4',movie_name),'MPEG-4');
@@ -66,7 +67,7 @@ open(vidfile);
 
         %% plotting
         if mod(i,40) == 0
-            sim_functions.make_plot(x,u,i*k);
+            sim_functions.make_plot(x,u,nn,mm,hh,i*k);
             thisFrame = getframe(gcf);
             writeVideo(vidfile, thisFrame);
         end

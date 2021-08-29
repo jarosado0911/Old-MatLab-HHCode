@@ -37,15 +37,19 @@ fh = @(h,v) gating_functions.ah(v).*(1-h)-gating_functions.bh(v).*h;
 
 %% for loops for solving
 figure(1)
+set(gcf, 'Position',  [100, 100, 2500, 600]);
+
 movie_name = 'FE_method';
 vidfile = VideoWriter(sprintf('%s.mp4',movie_name),'MPEG-4');
 open(vidfile);
 
     for i=1:nT
+        u = sim_functions.FE(u,A*u,k);
+        
         %% Forward Euler for time dependent ODEs on n,m,h
         if mthd == 0
             %% Forward Euler for Diffusion and Reaction
-            u = sim_functions.FE(u,A*u+f(nn,mm,hh,u),k);
+            u = sim_functions.FE(u,f(nn,mm,hh,u),k);
             u(1)=vstart; u(end)=0.0;
             
             nn = sim_functions.FE(nn,fn(nn,u),k);
@@ -53,7 +57,7 @@ open(vidfile);
             hh = sim_functions.FE(hh,fh(hh,u),k);
         %% RK4 for time dependent ODEs on n,m,h
         else
-            u = sim_functions.RK4_react_diff(nn,mm,hh,u,k,f,A);
+            u = sim_functions.RK4_react_diff(nn,mm,hh,u,k,f,0);
             u(1)=vstart; u(end)=0.0;
             
             nn = sim_functions.RK4(nn,u,k,fn); 
@@ -63,7 +67,7 @@ open(vidfile);
 
         %% plotting
         if mod(i,2000) == 0
-            sim_functions.make_plot(x,u,i*k);
+            sim_functions.make_plot(x,u,nn,mm,hh,i*k);
             thisFrame = getframe(gcf);
             writeVideo(vidfile, thisFrame);
         end
