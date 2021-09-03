@@ -60,6 +60,10 @@ ypts_brch = [1:1:length(xpts_brch)]/2;
 xpts = [xpts,xpts_brch];
 ypts = [ypts,ypts_brch];
 
+%% for video recording
+movie_name = 'FE_method_Ybranch';
+vidfile = VideoWriter(sprintf('%s.mp4',movie_name),'MPEG-4');
+open(vidfile);
 s2 = subplot(1,2,2);
 %% Solver loop
 for i=1:nT
@@ -77,7 +81,7 @@ for i=1:nT
     
     if mod(i,80) == 0
         cla(s2)
-        scatter(xpts,ypts,80,u,'filled','o')
+        scatter(xpts,ypts,600,u,'filled','o')
         xlim([min(xpts),max(xpts)])
         ylim([min(ypts),max(ypts)])
         title(sprintf('time = %0.2f [ms]',i*k))
@@ -86,8 +90,12 @@ for i=1:nT
         caxis([-15 100])
         colorbar('southoutside')
         drawnow
+        
+        thisFrame = getframe(gcf);
+        writeVideo(vidfile, thisFrame);
     end
 end
 
+close(vidfile);
 end
 
