@@ -1,12 +1,7 @@
-function [u,mm,nn,hh,x,t]=branchAP_Matrix()
-
+function [u,mm,nn,hh,x,t]=ybranch_sim()
 %% assign simulation parameters
 if nargin == 0
-    [nX,nT, X, T,~]=set_sim_params();
-    end_loc = floor(nX*2/3)-1;
-    brc_ngbr_loc = end_loc+1;
-    brc_loc = floor(nX/3);
-    src_loc=1;
+    [nX,nT, X, T,end_loc,brc_ngbr_loc,brc_loc,src_loc,~]=set_sim_params();
 end
 
 %%
@@ -34,7 +29,7 @@ A(brc_loc,brc_loc) = A(brc_loc,brc_loc)*3/2;
 
 A(brc_ngbr_loc,end_loc)=0;
 A(brc_ngbr_loc,brc_loc)=entry1;
-
+%% this setups the figure
 figure(1)
 set(gcf, 'Position',  [100, 100, 2500, 600]);
 subplot(1,2,1)
@@ -81,21 +76,10 @@ for i=1:nT
     
     if mod(i,80) == 0
         cla(s2)
-        scatter(xpts,ypts,600,u,'filled','o')
-        xlim([min(xpts),max(xpts)])
-        ylim([min(ypts),max(ypts)])
-        title(sprintf('time = %0.2f [ms]',i*k))
-        axis off
-        colormap jet
-        caxis([-15 100])
-        colorbar('southoutside')
-        drawnow
-        
+        sim_functions.makeyplot(xpts,ypts,u,i*k)
         thisFrame = getframe(gcf);
         writeVideo(vidfile, thisFrame);
     end
 end
-
 close(vidfile);
 end
-

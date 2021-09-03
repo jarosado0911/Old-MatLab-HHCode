@@ -25,6 +25,18 @@ classdef sim_functions
                                2.0.*(A*y3+f(nn,mm,hh,y3))+ ...
                                1.0.*(A*y4+f(nn,mm,hh,y4)));
         end
+        
+        function makeyplot(xpts,ypts,u,t)
+            scatter(xpts,ypts,60,u,'filled','o')
+            xlim([min(xpts),max(xpts)])
+            ylim([min(ypts),max(ypts)])
+            title(sprintf('time = %0.2f [ms]',t))
+            axis off
+            colormap jet
+            caxis([-15 100])
+            colorbar('southoutside')
+            drawnow
+        end
     end
 end
 
